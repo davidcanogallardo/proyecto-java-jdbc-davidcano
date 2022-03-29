@@ -5,6 +5,7 @@ import static java.lang.Math.abs;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 
@@ -126,7 +127,11 @@ public abstract class Person implements Identificable, Serializable {
     public LinkedHashSet<String> getPhoneNumber() {
         return phoneNumber;
     }
-
+    
+    public String[] getArray() {
+        String[] phones  = new String[this.phoneNumber.size()];
+        return this.phoneNumber.toArray(phones);
+    }
     public Address getFullAddress() {
         return fullAddress;
     }

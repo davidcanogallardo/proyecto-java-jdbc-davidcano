@@ -1,5 +1,6 @@
 package controlador;
 
+import java.sql.Connection;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
@@ -55,11 +56,16 @@ public class ClientsController {
 
     private ValidationSupport vs;
 
+	private Connection conexionBD;
+
+	public void setConexionBD(Connection conexionBD) throws IOException {
+		this.conexionBD = conexionBD;
+		dao = new ClientDAO(conexionBD);
+		dao.load();
+	}
+
     @FXML
     private void initialize() throws IOException {
-        dao = new ClientDAO();
-        dao.load();
-
         texts = GenericFormatter.getResourceBundle();
         vs = new ValidationSupport();
         vs.registerValidator(guiId, true, Validator.createEmptyValidator(texts.getString("alert.client.id")));

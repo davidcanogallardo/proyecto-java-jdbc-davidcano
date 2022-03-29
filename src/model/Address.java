@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.Array;
 
 public class Address implements Serializable {
     private String locality;
@@ -12,7 +13,12 @@ public class Address implements Serializable {
         this.locality = locality;
         this.province = province;
         this.zipCode = zipCode;
-        this.address = address;
+        this.zipCode = address;
+    }
+
+    public String[] getArray() {
+        String[] array = {this.locality,this.province,this.zipCode,this.address};
+        return array;
     }
 
     @Override

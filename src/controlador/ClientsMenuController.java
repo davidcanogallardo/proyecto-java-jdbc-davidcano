@@ -5,6 +5,8 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -15,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.Address;
 import model.Client;
 import model.ClientDAO;
 import utils.GenericFormatter;
@@ -35,35 +38,16 @@ public class ClientsMenuController {
 
 	private Connection conexionBD;
 
-	public void setConexionBD(Connection bd) {
+	public void setConexionBD(Connection bd) throws IOException {
 		this.conexionBD = bd;
-		try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM client where name like 'Hisoka'")) {
-			while (result.next()) {
-				System.out.println(result.getInt("id"));
-				System.out.println(result.getString("dni"));
-				System.out.println(result.getString("name"));
-				System.out.println(result.getString("lastname"));
-				System.out.println(result.getString("birthdate"));
-				System.out.println(result.getString("email"));
-				System.out.println(result.getString("address"));
-				// Array a = result.getArray("address");
-				// System.out.println(result.getByte("address"));
-				// System.out.println("-");
-				// System.out.println(b);
-				// Array b = result.getArray("phone");
-				// String[] c = (String[]) b.getArray();
-				System.out.println(result.getArray("phone"));
-				
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
+		dao = new ClientDAO(conexionBD);
+		dao.load();
 	}
 
 	@FXML
 	private void initialize() throws IOException {
-		dao = new ClientDAO();
-		dao.load();
+		// dao = new ClientDAO();
+		// dao.load();
 		texts = GenericFormatter.getResourceBundle();
 	}
 
@@ -106,6 +90,7 @@ public class ClientsMenuController {
 
 		if (title.equals(texts.getString("clientform.title"))) {
 			ClientsController clientsAdd = loader.getController();
+			clientsAdd.setConexionBD(conexionBD);
 			clientsAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {
