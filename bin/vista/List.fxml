@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="764.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.List">
+   <children>
+      <Label fx:id="output" alignment="TOP_LEFT" layoutX="237.0" layoutY="14.0" prefHeight="458.0" prefWidth="519.0">
+         <font>
+            <Font size="25.0" />
+         </font></Label>
+      <ListView fx:id="listview" layoutX="14.0" layoutY="14.0" onKeyPressed="#list" onMouseClicked="#list" prefHeight="458.0" prefWidth="215.0" />
+   </children>
+</AnchorPane>
