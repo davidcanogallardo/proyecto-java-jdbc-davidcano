@@ -45,14 +45,13 @@ public class ClientsMenuController {
 				System.out.println(result.getString("lastname"));
 				System.out.println(result.getString("birthdate"));
 				System.out.println(result.getString("email"));
-				String a = result.getString("address");
-				// String[] b = (String[]) a.getArray();
-				System.out.println();
+				System.out.println(result.getString("address"));
+				// Array a = result.getArray("address");
+				// System.out.println(result.getByte("address"));
+				// System.out.println("-");
 				// System.out.println(b);
-				Array b = result.getArray("phone");
-				String[] c = (String[]) b.getArray();
-				System.out.println(result.getArray("phone"));
-				System.out.println(result.getArray("phone"));
+				// Array b = result.getArray("phone");
+				// String[] c = (String[]) b.getArray();
 				System.out.println(result.getArray("phone"));
 				
 			}
