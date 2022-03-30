@@ -1,6 +1,7 @@
 package controlador;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -18,7 +19,7 @@ import utils.GenericFormatter;
 public class ProductsMenuController {
 	private ResourceBundle texts;
 	private Stage ventana;
-	private ProductDAO dao = new ProductDAO();
+	private ProductDAO dao;
 
 	@FXML
 	private Button btnAdd;
@@ -29,10 +30,18 @@ public class ProductsMenuController {
 	@FXML
 	private Button btnReturn;
 
+	private Connection conexionBD;
+
+	public void setConexionBD(Connection bd) throws IOException {
+		this.conexionBD = bd;
+		dao = new ProductDAO(conexionBD);
+		dao.load();
+	}
+
 	@FXML
 	private void initialize() throws IOException {
 		texts = GenericFormatter.getResourceBundle();
-		dao.load();
+		// dao.load();
 	}
 
 	public Stage getVentana() {
@@ -77,6 +86,7 @@ public class ProductsMenuController {
 
 		if (title.equals(texts.getString("prodform.title"))) {
 			ProductsController productsAdd = loader.getController();
+			productsAdd.setConexionBD(conexionBD);
 			productsAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {
