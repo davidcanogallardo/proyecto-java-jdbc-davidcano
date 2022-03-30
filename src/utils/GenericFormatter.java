@@ -3,6 +3,7 @@ package utils;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -18,6 +19,8 @@ public class GenericFormatter {
     static NumberFormat cFormatter;
     static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
 
     public static void setLocale() {
         System.out.println(lDefault.toString());
@@ -66,6 +69,13 @@ public class GenericFormatter {
     public static String formatDate(LocalDate date) {
         if (date != null) {
             return date.format(dateFormatter);
+        }
+        return null;
+    }
+
+    public static String formatDateTime(LocalDateTime date) {
+        if (date != null) {
+            return date.format(dateTimeFormatter);
         }
         return null;
     }

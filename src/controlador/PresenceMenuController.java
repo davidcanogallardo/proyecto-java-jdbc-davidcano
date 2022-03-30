@@ -1,6 +1,7 @@
 package controlador;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ResourceBundle;
 
 
@@ -28,11 +29,17 @@ public class PresenceMenuController {
 	@FXML
 	private Button btnReturn;
 
+	private Connection conexionBD;
+
+	public void setConexionBD(Connection bd) throws IOException {
+		this.conexionBD = bd;
+		dao = new PresenceRegisterDAO(conexionBD);
+		dao.load();
+	}
+	
 	@FXML
 	private void initialize() throws IOException {
-		dao = new PresenceRegisterDAO();
 		texts = GenericFormatter.getResourceBundle();
-		dao.load();
 	}
 
 	public Stage getVentana() {

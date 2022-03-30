@@ -1,6 +1,7 @@
 package controlador;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
@@ -30,13 +31,16 @@ public class DiscontinuedProdController {
 	private ResourceBundle texts;
 
     private ValidationSupport vs;
+	private Connection conexionBD;
 
+	public void setConexionBD(Connection bd) throws IOException {
+		this.conexionBD = bd;
+		dao = new ProductDAO(conexionBD);
+		dao.load();
+	}
 
     @FXML
     private void initialize() throws IOException {
-        dao = new ProductDAO();
-        dao.load();
-
         texts = GenericFormatter.getResourceBundle();
 
         vs = new ValidationSupport();

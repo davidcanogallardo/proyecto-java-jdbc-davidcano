@@ -107,6 +107,7 @@ public class IniciBotonsController extends Application {
 		} else if (title.equals(texts.getString("clockinout.title"))) {
 			PresenceMenuController presenceMenu = loader.getController();
 			System.out.println("voy a cliente");
+			presenceMenu.setConexionBD(conexionBD);
 			presenceMenu.setVentana(stage);
 		}
 	}

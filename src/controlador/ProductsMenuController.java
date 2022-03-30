@@ -98,6 +98,8 @@ public class ProductsMenuController {
 			});
 		} else if (title.equals("list")) {
 			DiscontinuedProdController prod = loader.getController();
+			prod.setConexionBD(conexionBD);
+
 			prod.setVentana(stage);
 			stage.setOnCloseRequest((WindowEvent we) -> {
 				try {
