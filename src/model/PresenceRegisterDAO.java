@@ -29,7 +29,7 @@ public class PresenceRegisterDAO {
 
     public Presence add(Presence obj) {
         for (Presence presence : map) {
-            if (presence.equals(obj)) {
+            if (presence.getId() == obj.getId() && presence.getLeaveTime() == null) {
                 return null;
             }
         }
@@ -38,14 +38,9 @@ public class PresenceRegisterDAO {
     }
 
     public boolean addLeaveTime(int id) {
-        LocalDate today = LocalDate.now();
-        
         for (Presence presence : this.map) {
-            System.out.println(presence.toString());
-            // if (presence.getId() == id && presence.getDate().compareTo(today) == 0 && presence.getLeaveTime() == null) {
-            if(true) {
-                LocalTime now = LocalTime.now();
-                presence.setLeaveTime(now);
+            if (presence.getId() == id && presence.getLeaveTime() == null) {
+                presence.setLeaveTime(LocalDateTime.now());
                 return true;
             }
         }
@@ -55,7 +50,6 @@ public class PresenceRegisterDAO {
     public void list() {
         for (Presence presence : map) {
             System.out.println(presence.toString());
-
         }
     }
 

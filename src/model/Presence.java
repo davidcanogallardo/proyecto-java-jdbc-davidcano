@@ -59,7 +59,7 @@ public class Presence implements Comparable<Presence>, Serializable {
     @Override
     public boolean equals(Object obj) {
         Presence obj2 = (Presence) obj;
-        return this.id == obj2.id && this.enterTime.equals(obj2.enterTime);
+        return this.id == obj2.id && this.leaveTime == null && obj2.leaveTime == null;
     }
 
     // Ordeno numericamente por el id y si tienen id ordeno por fecha y hora de

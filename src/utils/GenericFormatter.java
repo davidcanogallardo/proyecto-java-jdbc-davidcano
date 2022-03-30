@@ -14,13 +14,12 @@ public class GenericFormatter {
     static Locale lDefault = Locale.getDefault(Category.DISPLAY);
     static Locale lFormat = Locale.getDefault(Category.FORMAT);
     static DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-    static ResourceBundle text = ResourceBundle.getBundle("vista.Texts", lDefault);
+    static ResourceBundle text;
     static NumberFormat nFormatter;
     static NumberFormat cFormatter;
     static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
 
     public static void setLocale() {
         System.out.println(lDefault.toString());
@@ -30,9 +29,10 @@ public class GenericFormatter {
             lDefault = new Locale("es", "ES");
             System.out.println(lDefault);
             df = DateFormat.getDateInstance(DateFormat.SHORT, lDefault);
-            text = ResourceBundle.getBundle("vista.Texts", lDefault);
         }
-        if (!lFormat.equals(new Locale("es", "ES")) && !lFormat.equals(new Locale("ca", "ES"))) {
+        text = ResourceBundle.getBundle("vista.Texts", lDefault);
+        if (!lFormat.equals(new Locale("es", "ES")) && !lFormat.equals(new Locale("ca", "ES"))
+                && !lDefault.equals(new Locale("en", "US"))) {
             lFormat = new Locale("es", "ES");
             System.out.println(lFormat);
         }

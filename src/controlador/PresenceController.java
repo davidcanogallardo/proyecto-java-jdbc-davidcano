@@ -1,7 +1,9 @@
 package controlador;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
@@ -36,10 +38,15 @@ public class PresenceController {
     private ValidationSupport vs;
     private ResourceBundle texts;
 
+	private Connection conexionBD;
+
+	public void setConexionBD(Connection bd) throws IOException {
+		this.conexionBD = bd;
+		dao = new PresenceRegisterDAO(conexionBD);
+		dao.load();
+	}
     @FXML
     private void initialize() throws IOException {
-        dao = new PresenceRegisterDAO();
-        dao.load();
         texts = GenericFormatter.getResourceBundle();
 
         vs = new ValidationSupport();
@@ -83,19 +90,21 @@ public class PresenceController {
     private void onAction(ActionEvent e) throws Exception {
         if (e.getSource() == guiClockIn) {
             if (isDatosValidos()) {
-                Presence presence = new Presence(Integer.parseInt(guiId.getText()), LocalDate.now(), LocalTime.now());
+                Presence presence = new Presence(Integer.parseInt(guiId.getText()), LocalDateTime.now());
                 if (dao.add(presence) == null) {
                     AlertWindow.show(ventana, "Error", texts.getString("alert.presence.clockin"), "");
                 }
             }
         } else if (e.getSource() == guiClockOut) {
             if (isDatosValidos()) {
-
                 if (!dao.addLeaveTime(Integer.parseInt(guiId.getText()))) {
-                    AlertWindow.show(ventana, "Error", texts.getString("alert.presence.clockout"), "");
+                    AlertWindow.show(ventana, "Error2", texts.getString("alert.presence.clockout"), "");
                 }
             }
         }
+        System.out.println("--------------------------");
+        dao.list();
+        System.out.println("--------------------------");
     }
 
     @FXML
