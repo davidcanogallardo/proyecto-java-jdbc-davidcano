@@ -207,6 +207,7 @@ public class ClientsController {
         if (e.getCode() == KeyCode.ENTER || e.getCode() == KeyCode.TAB) {
             // Comprovar si existeix la persona indicada en el control idTextField
             Client clie = dao.get(getClientId());
+            // System.out.println(clie.toString());
             if (clie != null) {
                 // posar els valors per modificarlos
                 guiDni.setText(clie.getDni());

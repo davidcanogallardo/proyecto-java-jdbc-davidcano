@@ -66,12 +66,11 @@ public class ClientDAO implements Persistable<Client>, Serializable {
     }
 
     public Client delete(Client obj) {
-
         if (hashMap.containsKey(obj.getId())) {
             try {
                 String sql = "";
                 PreparedStatement stmt = null;
-                if (this.find(id) != null){
+                if (this.get(obj.getId()) != null){
                     sql = "DELETE FROM client WHERE id = ?";
                     stmt = conexionBD.prepareStatement(sql);
                     int i = 1;
@@ -103,6 +102,24 @@ public class ClientDAO implements Persistable<Client>, Serializable {
 
     public void modify(Client obj) {
         hashMap.replace(obj.getId(), get(obj.getId()), obj);
+
+        try {
+            String sql = "UPDATE client SET dni=?,name=?,lastname=?,address=?,phone=? WHERE id = ?";
+            PreparedStatement stmt = conexionBD.prepareStatement(sql);
+            int i = 1;
+                // ID
+                stmt.setString(i++, obj.getDni());
+                stmt.setString(i++, obj.getName());
+                stmt.setString(i++, obj.getSurname());
+                // address
+                stmt.setArray(i++, conexionBD.createArrayOf("VARCHAR", obj.getFullAddress().getArray()));
+                // phone
+                stmt.setArray(i++, conexionBD.createArrayOf("VARCHAR", obj.getArray()));
+                stmt.setInt(i++, obj.getId());
+                int rows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void save() throws IOException {
@@ -115,19 +132,6 @@ public class ClientDAO implements Persistable<Client>, Serializable {
 
     public void load() throws IOException {
         System.out.println("cargando....");
-        // FileInputStream fis = new FileInputStream("client.dat");
-        // try {
-        //     ObjectInputStream ois = new ObjectInputStream(fis);
-        //     try {
-        //         this.hashMap = (HashMap<Integer, Client>) ois.readObject();
-        //     } catch (ClassNotFoundException e) {
-        //         // TODO Auto-generated catch block
-        //         e.printStackTrace();
-        //     }
-        //     ois.close();
-        // } catch (Exception EOFException) {
-        //     // TODO: handle exception
-        // }
 		try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM client")) {
 			while (result.next()) {
                 System.out.println(result.getString("name"));
@@ -138,12 +142,13 @@ public class ClientDAO implements Persistable<Client>, Serializable {
 				Array address = result.getArray("address");
 
 				String[] addressArr = (String[]) address.getArray();
+
 				Address fullAddress = new Address(addressArr[0], addressArr[1], addressArr[2], addressArr[3]);
+                System.out.println(fullAddress.toString());
 
 				Array phone = result.getArray("phone");
 				String[] b = (String[]) phone.getArray();
 				LinkedHashSet<String> phoneNumber = new LinkedHashSet<>(Arrays.asList(b));
-				// LinkedHashSet<String> phoneNumber = new LinkedHashSet<>();
 
 				Client cli2 = new Client(id, dni, name, surname, fullAddress, phoneNumber);
                 hashMap.put(cli2.getId(), cli2);

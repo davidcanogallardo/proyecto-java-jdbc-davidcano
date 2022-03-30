@@ -13,7 +13,7 @@ public class Address implements Serializable {
         this.locality = locality;
         this.province = province;
         this.zipCode = zipCode;
-        this.zipCode = address;
+        this.address = address;
     }
 
     public String[] getArray() {

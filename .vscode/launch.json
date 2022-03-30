@@ -9,14 +9,16 @@
             "name": "Launch IniciBotonsController",
             "request": "launch",
             "mainClass": "controlador.IniciBotonsController",
-            "vmArgs": "--module-path /home/d/javafx-sdk-17.0.2/lib/ --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
+            // "vmArgs": "--module-path /home/d/javafx-sdk-17.0.2/lib/ --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
+            "vmArgs": "--module-path G:/Documents/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
         },
         {
             "type": "java",
             "name": "Launch App",
             "request": "launch",
             "mainClass": "controlador.IniciMenuController",
-            "vmArgs": "--module-path /home/d/javafx-sdk-17.0.2/lib/ --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
+            // "vmArgs": "--module-path /home/d/javafx-sdk-17.0.2/lib/ --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
+            "vmArgs": "--module-path G:/Documents/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.fxml --add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED"
         }
     ]
 }
