@@ -126,6 +126,7 @@ public class ProductDAO implements Persistable<Product>, Serializable {
     }
 
     public Product get(Integer id, boolean isPack) {
+
         if (isPack) {
             if (packMap.containsKey(id)) {
                 return (Product) packMap.get(id);
@@ -144,10 +145,22 @@ public class ProductDAO implements Persistable<Product>, Serializable {
     }
 
     public HashMap<Integer, Product> getPackMap() {
+        try {
+            load();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return new HashMap<>(packMap);
     }
 
     public HashMap<Integer, Product> getProdMap() {
+        try {
+            load();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return new HashMap<>(prodMap);
     }
 
@@ -158,15 +171,15 @@ public class ProductDAO implements Persistable<Product>, Serializable {
                 String sql = "UPDATE pack SET name=?,price=?,stock=?,date_start=?,date_end=?,discount=? WHERE id = ?";
                 PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
-                    // ID
-                    stmt.setString(i++, pack.getName());
-                    stmt.setDouble(i++, obj.getPrice());
-                    stmt.setInt(i++, obj.getStock());
-                    stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
-                    stmt.setDate(i++, Date.valueOf(obj.getEndCatalog()));
-                    stmt.setDouble(i++, ((Pack)obj).getDiscount());
-                    stmt.setInt(i++, obj.getId());
-                    int rows = stmt.executeUpdate();
+                // ID
+                stmt.setString(i++, pack.getName());
+                stmt.setDouble(i++, obj.getPrice());
+                stmt.setInt(i++, obj.getStock());
+                stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
+                stmt.setDate(i++, Date.valueOf(obj.getEndCatalog()));
+                stmt.setDouble(i++, ((Pack)obj).getDiscount());
+                stmt.setInt(i++, obj.getId());
+                int rows = stmt.executeUpdate();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
