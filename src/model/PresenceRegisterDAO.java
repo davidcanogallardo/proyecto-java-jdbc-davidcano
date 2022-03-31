@@ -1,35 +1,28 @@
 package model;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.sql.Timestamp;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.TreeSet;
 
 public class PresenceRegisterDAO {
-	private Connection conexionBD;
+	private Connection con;
 
-    public PresenceRegisterDAO(Connection conexionBD) {
-        this.conexionBD = conexionBD;
+    public PresenceRegisterDAO(Connection con) {
+        this.con = con;
     }
-    public TreeSet<Presence> map = new TreeSet<>();
+    public TreeSet<Presence> treeSet = new TreeSet<>();
 
     public TreeSet<Presence> getMap() {
-        return map;
+        return treeSet;
     }
 
     public Presence add(Presence obj) {
-        for (Presence presence : map) {
+        for (Presence presence : treeSet) {
             if (presence.getId() == obj.getId() && presence.getLeaveTime() == null) {
                 return null;
             }
@@ -37,82 +30,60 @@ public class PresenceRegisterDAO {
         
 		try {
             String sql = "INSERT INTO presence VALUES (?,?)";
-            PreparedStatement stmt = conexionBD.prepareStatement(sql);
+            PreparedStatement stmt = con.prepareStatement(sql);
             int i = 1;
             stmt.setInt(i++, obj.getId());
             stmt.setTimestamp(i++, Timestamp.valueOf(LocalDateTime.now()));
-            int rows = stmt.executeUpdate();
-            this.map.add(obj); 
+            stmt.executeUpdate();
+            this.treeSet.add(obj); 
+            return obj;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+            return null;
 		}
 
-        return obj;
     }
 
     public boolean addLeaveTime(int id) {
-        for (Presence presence : this.map) {
+        for (Presence presence : this.treeSet) {
             if (presence.getId() == id && presence.getLeaveTime() == null) {
                 presence.setLeaveTime(LocalDateTime.now());
                 try {
                     String sql = "UPDATE presence SET date_leave=? WHERE id=? AND date_leave IS NULL";
-                    PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                    PreparedStatement stmt = con.prepareStatement(sql);
                     int i = 1;
                     stmt.setTimestamp(i++, Timestamp.valueOf(LocalDateTime.now()));
                     stmt.setInt(i++, id);
-                    int rows = stmt.executeUpdate();
+                    stmt.executeUpdate();
+                    return true;
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
+                    return false;
                 }
-                return true;
             }
         }
         return false;
     }
 
     public void list() {
-        for (Presence presence : map) {
+        for (Presence presence : treeSet) {
             System.out.println(presence.toString());
         }
     }
 
-    public void save() throws IOException {
-        System.out.println("guardando dao client...");
-        FileOutputStream fos = new FileOutputStream("presence.dat");
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(this.map);
-        oos.close();
+    public void save() {
     }
 
     public void load() throws IOException {
         System.out.println("cargando....");
-        // FileInputStream fis = new FileInputStream("presence.dat");
-        // try {
-        //     ObjectInputStream ois = new ObjectInputStream(fis);
-        //     try {
-        //         this.map = (TreeSet<Presence>) ois.readObject();
-        //     } catch (ClassNotFoundException e) {
-        //         // TODO Auto-generated catch block
-        //         e.printStackTrace();
-        //     }
-        //     ois.close();
-        // } catch (Exception EOFException) {
-        //     // TODO: handle exception
-        // }
-		try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM presence")) {
+		try (ResultSet result = con.createStatement().executeQuery("SELECT * FROM presence")) {
 			while (result.next()) {
-                // System.out.println(result.getString("name"));
 				int id = result.getInt("id");
                 Timestamp enter = result.getTimestamp("date_enter");
                 Timestamp leave = result.getTimestamp("date_leave");
-                // System.out.println(enter);
-                // Date leave = result.getDate("date_leave");
-                // Timestamp ts = new Timestamp(enter.getTime());
-                // Timestamp ts2 = new Timestamp(leave.getTime());
-                // LocalDateTime aa = enter.toLocalDateTime
                 Presence presence = new Presence(id, enter.toLocalDateTime(),leave.toLocalDateTime());
                 
-                map.add(presence);
+                treeSet.add(presence);
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

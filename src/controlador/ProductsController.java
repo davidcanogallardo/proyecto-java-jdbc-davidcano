@@ -62,11 +62,11 @@ public class ProductsController {
     private ValidationSupport vsProd;
     private ValidationSupport vsPack;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new ProductDAO(conexionBD);
+	public void setDBConnection(Connection bd) throws IOException {
+		this.con = bd;
+		dao = new ProductDAO(con);
 		dao.load();
 	}
 
@@ -129,7 +129,7 @@ public class ProductsController {
         // producto son válidos
         if ((!isPack.isSelected() && productValid) || (isPack.isSelected() && packValid && productValid)) {
             Product prod = getProductFromForm();
-            if (dao.get(Integer.parseInt(idTextField.getText()), isPack.isSelected()) == null) {
+            if (dao.get(getProductId(), isPack.isSelected()) == null) {
                 System.out.println();
                 AlertWindow.show(ventana, texts.getString("alert.prod.createtitle"),
                         texts.getString("alert.prod.createprod"), "");
@@ -195,7 +195,7 @@ public class ProductsController {
 
     // Devuelve una instancia de producto con la informacion de la GUI
     private Product getProductFromForm() {
-        Integer id = Integer.parseInt(idTextField.getText());
+        Integer id = getProductId();
         String name = nameTextField.getText();
         double price = Double.parseDouble(priceTextField.getText());
         LocalDate startCatalog = startDatePicker.getValue();
@@ -210,9 +210,7 @@ public class ProductsController {
             Integer discount = Integer.parseInt(guiDiscount.getText());
 
             TreeSet<Product> productList = new TreeSet<>();
-            System.out.println("1");
             if (!guiProdList.getText().equals("")) {
-                System.out.println("2");
                 String[] prodIds = guiProdList.getText().split(",");
                 for (String idProd : prodIds) {
                     if (dao.get(Integer.parseInt(idProd),false) != null && dao.get(Integer.parseInt(idProd), false) instanceof Product) {
@@ -220,7 +218,6 @@ public class ProductsController {
                     }
                 }
             }
-            System.out.println(productList);
             Pack product = new Pack(productList, discount, id, name, price, startCatalog, endCatalog);
             return (Product) product;
         }
@@ -233,8 +230,7 @@ public class ProductsController {
 
     @FXML
     private void deleteProd() {
-        System.out.println(isPack.isSelected());
-        int id = Integer.parseInt(idTextField.getText());
+        int id = getProductId();
         if (dao.get(id, isPack.isSelected()) != null) {
             // Aviso que el producto se ha podido borrar
             AlertWindow.show(ventana, texts.getString("alert.prod.deletetitle"),
@@ -250,7 +246,7 @@ public class ProductsController {
 
     @FXML
     private void list() {
-        System.out.println(dao.getMap());
+        System.out.println(dao.getPackMap());
     }
 
     // Función que llamo cuando se hace clic en el checkbox de pack, oculta o

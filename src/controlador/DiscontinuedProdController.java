@@ -31,11 +31,11 @@ public class DiscontinuedProdController {
 	private ResourceBundle texts;
 
     private ValidationSupport vs;
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new ProductDAO(conexionBD);
+	public void setDBConnection(Connection con) throws IOException {
+		this.con = con;
+		dao = new ProductDAO(con);
 		dao.load();
 	}
 

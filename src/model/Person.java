@@ -128,7 +128,7 @@ public abstract class Person implements Identificable, Serializable {
         return phoneNumber;
     }
     
-    public String[] getArray() {
+    public String[] getPhonesAsArray() {
         String[] phones  = new String[this.phoneNumber.size()];
         return this.phoneNumber.toArray(phones);
     }

@@ -29,11 +29,11 @@ public class PresenceMenuController {
 	@FXML
 	private Button btnReturn;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new PresenceRegisterDAO(conexionBD);
+	public void setDBConnection(Connection bd) throws IOException {
+		this.con = bd;
+		dao = new PresenceRegisterDAO(con);
 		dao.load();
 	}
 	
@@ -81,7 +81,7 @@ public class PresenceMenuController {
 
 		if (title.equals("Fichar")) {
 			PresenceController presenceAdd = loader.getController();
-			presenceAdd.setConexionBD(conexionBD);
+			presenceAdd.setDBConnection(con);
 			presenceAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {

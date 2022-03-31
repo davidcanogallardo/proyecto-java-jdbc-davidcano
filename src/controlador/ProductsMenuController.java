@@ -30,11 +30,11 @@ public class ProductsMenuController {
 	@FXML
 	private Button btnReturn;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new ProductDAO(conexionBD);
+	public void setDBConnection(Connection bd) throws IOException {
+		this.con = bd;
+		dao = new ProductDAO(con);
 		dao.load();
 	}
 
@@ -62,7 +62,7 @@ public class ProductsMenuController {
 		if (e.getSource() == btnAdd) {
 			changeScene("/vista/ProductsView.fxml", texts.getString("prodform.title"));
 		} else if (e.getSource() == btnList) {
-			for (Product product : dao.getMap().values()) {
+			for (Product product : dao.getPackMap().values()) {
 				System.out.println(product.toString() + "\t");
 			}
 		} else if (e.getSource() == btnListD) {
@@ -86,7 +86,7 @@ public class ProductsMenuController {
 
 		if (title.equals(texts.getString("prodform.title"))) {
 			ProductsController productsAdd = loader.getController();
-			productsAdd.setConexionBD(conexionBD);
+			productsAdd.setDBConnection(con);
 			productsAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {
@@ -98,7 +98,7 @@ public class ProductsMenuController {
 			});
 		} else if (title.equals("list")) {
 			DiscontinuedProdController prod = loader.getController();
-			prod.setConexionBD(conexionBD);
+			prod.setDBConnection(con);
 
 			prod.setVentana(stage);
 			stage.setOnCloseRequest((WindowEvent we) -> {

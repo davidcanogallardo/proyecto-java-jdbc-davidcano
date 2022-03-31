@@ -26,18 +26,72 @@ public class ProductDAO implements Persistable<Product>, Serializable {
     private HashMap<Integer, Product> prodMap = new HashMap<>();
     private HashMap<Integer, Pack> packMap = new HashMap<>();
 
+	private Connection con;
 
-	private Connection conexionBD;
-
-    public ProductDAO(Connection conexionBD) {
-        this.conexionBD = conexionBD;
+    public ProductDAO(Connection con) {
+        this.con = con;
     }
+
     public Product add(Product obj) {
-        if (prodMap.containsKey(obj.getId())) {
+        if (obj instanceof Pack && packMap.containsKey(obj.getId()) || !(obj instanceof Pack) && prodMap.containsKey(obj.getId())) {
             return null;
-        } else {
-            prodMap.put(obj.getId(), obj);
+        } else if (obj instanceof Pack pack && !packMap.containsKey(obj.getId())) {
+            try {
+                PreparedStatement stmt = null;
+                String sql = "INSERT INTO pack VALUES(?,?,?,?,?,?,?)";
+                stmt = con.prepareStatement(sql);
+                int i = 1;
+                stmt.setInt(i++, pack.getId());
+                stmt.setString(i++, pack.getName());
+                stmt.setDouble(i++, pack.getPrice());
+                stmt.setInt(i++, 1);
+                stmt.setDate(i++, Date.valueOf(pack.getStartCatalog()));
+                stmt.setDate(i++, Date.valueOf(pack.getEndCatalog()));
+                stmt.setDouble(i++, pack.getDiscount());
+                
+                stmt.executeUpdate();
+                prodMap.put(obj.getId(), obj);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
+
+            for (Product prod : pack.getProdList()) {
+                try {
+                    String sql = "INSERT INTO pack_products VALUES (?,?)";
+                    PreparedStatement stmt = con.prepareStatement(sql);
+                    int i = 1;
+                    stmt.setInt(i++, pack.getId());
+                    stmt.setInt(i++, prod.getId());
+                    int rows = stmt.executeUpdate();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                    return null;
+                }
+            }
             return obj;
+
+
+        } else {
+            try {
+                PreparedStatement stmt = null;
+                String sql = "INSERT INTO product VALUES(?,?,?,?,?,?)";
+                stmt = con.prepareStatement(sql);
+                int i = 1;
+                stmt.setInt(i++, obj.getId());
+                stmt.setString(i++, obj.getName());
+                stmt.setDouble(i++, obj.getPrice());
+                stmt.setInt(i++, obj.getStock());
+                stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
+                stmt.setDate(i++, Date.valueOf(obj.getEndCatalog()));
+                
+                stmt.executeUpdate();
+                prodMap.put(obj.getId(), obj);
+                return obj;
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
         }
     }
 
@@ -49,13 +103,12 @@ public class ProductDAO implements Persistable<Product>, Serializable {
 
         if (obj instanceof Pack && packMap.get(obj.getId())!=null || obj instanceof Product && prodMap.get(obj.getId())!=null) {
             try {
-                // String sql = "";
                 PreparedStatement stmt = null;
-                // sql = "DELETE FROM product WHERE id = ?";
-                stmt = conexionBD.prepareStatement(sql);
+                stmt = con.prepareStatement(sql);
                 int i = 1;
                 stmt.setInt(i++, obj.getId());
-                int rows = stmt.executeUpdate();
+                stmt.executeUpdate();
+                // Recargo la lista de packs y productos
                 this.load();
                 if (obj instanceof Pack) {
                     packMap.remove(obj.getId());
@@ -90,15 +143,20 @@ public class ProductDAO implements Persistable<Product>, Serializable {
         }
     }
 
-    public HashMap<Integer, Product> getMap() {
+    public HashMap<Integer, Product> getPackMap() {
         return new HashMap<>(packMap);
+    }
+
+    public HashMap<Integer, Product> getProdMap() {
+        return new HashMap<>(prodMap);
     }
 
     public void modify(Product obj) {
         if (obj instanceof Pack pack) {
+            // Modifico el pack
             try {
                 String sql = "UPDATE pack SET name=?,price=?,date_start=?,date_end=?,discount=? WHERE id = ?";
-                PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
                     // ID
                     stmt.setInt(i++, obj.getId());
@@ -112,20 +170,24 @@ public class ProductDAO implements Persistable<Product>, Serializable {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
+
+            // Borro todos los prods del pack
             try {
                 String sql = "DELETE FROM pack_products WHERE id_pack = ?";
-                PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
                 stmt.setInt(i++, obj.getId());
                 int rows = stmt.executeUpdate();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.println(pack.toString());
+
+            // Añado los productos al pack
+            // System.out.println(pack.toString());
             for (Product prod : pack.getProdList()) {
                 try {
                     String sql = "INSERT INTO pack_products VALUES (?,?)";
-                    PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                    PreparedStatement stmt = con.prepareStatement(sql);
                     int i = 1;
                     stmt.setInt(i++, pack.getId());
                     stmt.setInt(i++, prod.getId());
@@ -134,20 +196,19 @@ public class ProductDAO implements Persistable<Product>, Serializable {
                     System.out.println(e.getMessage());
                 }
             }
-    
         } else {
             try {
                 String sql = "UPDATE product SET name=?,price=?,stock=?,date_start=?,date_end=? WHERE id = ?";
-                PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
-                    stmt.setInt(i++, obj.getId());
-                    stmt.setDouble(i++, obj.getPrice());
-                    stmt.setInt(i++, obj.getStock());
-                    stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
-                    stmt.setDate(i++, Date.valueOf(obj.getEndCatalog()));
-                    stmt.setInt(i++, obj.getId());
-                    int rows = stmt.executeUpdate();
-                    prodMap.replace(obj.getId(), obj);
+                stmt.setInt(i++, obj.getId());
+                stmt.setDouble(i++, obj.getPrice());
+                stmt.setInt(i++, obj.getStock());
+                stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
+                stmt.setDate(i++, Date.valueOf(obj.getEndCatalog()));
+                stmt.setInt(i++, obj.getId());
+                int rows = stmt.executeUpdate();
+                prodMap.replace(obj.getId(), obj);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -155,12 +216,7 @@ public class ProductDAO implements Persistable<Product>, Serializable {
         
     }
 
-    public void save() throws IOException {
-        System.out.println("guardando products dao...");
-        FileOutputStream fos = new FileOutputStream("product.dat");
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(this.prodMap);
-        oos.close();
+    public void save() {
     }
 
     public void load() throws IOException {
@@ -168,22 +224,8 @@ public class ProductDAO implements Persistable<Product>, Serializable {
         packMap = new HashMap<>();
         prodMap = new HashMap<>();
 
-        // FileInputStream fis = new FileInputStream("product.dat");
-        // try {
-        //     ObjectInputStream ois = new ObjectInputStream(fis);
-        //     try {
-        //         this.hashMap = (HashMap<Integer, Product>) ois.readObject();
-        //     } catch (ClassNotFoundException e) {
-        //         // TODO Auto-generated catch block
-        //         e.printStackTrace();
-        //     }
-        //     ois.close();
-        // } catch (Exception EOFException) {
-        //     // TODO: handle exception
-        // }
-		try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM product")) {
+		try (ResultSet result = con.createStatement().executeQuery("SELECT * FROM product")) {
 			while (result.next()) {
-                // System.out.println(result.getString("name"));
 				int id = result.getInt("id");
 				String name = result.getString("name");
 				double price = result.getDouble("price");
@@ -201,9 +243,8 @@ public class ProductDAO implements Persistable<Product>, Serializable {
 			System.out.println(e.getMessage());
 		}
 
-		try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM pack")) {
+		try (ResultSet result = con.createStatement().executeQuery("SELECT * FROM pack")) {
 			while (result.next()) {
-                System.out.println(result.getString("name"));
 				int id = result.getInt("id");
 				String name = result.getString("name");
 				double price = result.getDouble("price");
@@ -222,17 +263,13 @@ public class ProductDAO implements Persistable<Product>, Serializable {
 			System.out.println(e.getMessage());
 		}
 
-        try (ResultSet result = conexionBD.createStatement().executeQuery("SELECT * FROM pack_products")) {
+        try (ResultSet result = con.createStatement().executeQuery("SELECT * FROM pack_products")) {
             while (result.next()) {
                 int id_pack = result.getInt("id_pack");
                 int id_producto = result.getInt("id_producto");
-                // System.out.println(id_pack);
-                // System.out.println(id_producto);
 
                 Pack pack =  packMap.get(id_pack);
                 Product prod = prodMap.get(id_producto);
-                // System.out.println(pack.toString());
-                // System.out.println(prod.toString());
 
                 pack.getProdList().add(prod);
                 packMap.put(pack.getId(), pack);
@@ -247,9 +284,6 @@ public class ProductDAO implements Persistable<Product>, Serializable {
         List<Product> list = new ArrayList<Product>();
         for (Product product : prodMap.values()) {
             if (product.getEndCatalog().isBefore(date)) {
-                // System.out.print("Días de diferencia: ");
-                // System.out.println(ChronoUnit.DAYS.between(product.getEndCatalog(), date));
-                // System.out.println(product.toString() + "\n");
                 list.add(product);
             }
         }

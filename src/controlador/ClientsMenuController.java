@@ -36,18 +36,16 @@ public class ClientsMenuController {
 	@FXML
 	private Button btnReturn;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new ClientDAO(conexionBD);
+	public void setDBConnection(Connection con) throws IOException {
+		this.con = con;
+		dao = new ClientDAO(con);
 		dao.load();
 	}
 
 	@FXML
 	private void initialize() throws IOException {
-		// dao = new ClientDAO();
-		// dao.load();
 		texts = GenericFormatter.getResourceBundle();
 	}
 
@@ -69,7 +67,7 @@ public class ClientsMenuController {
 		if (e.getSource() == btnAdd) {
 			changeScene("/vista/ClientsView.fxml", texts.getString("clientform.title"));
 		} else if (e.getSource() == btnList) {
-			for (Client client : dao.getMap().values()) {
+			for (Client client : dao.getPackMap().values()) {
 				System.out.println(client.toString() + "\n");
 			}
 		} else if (e.getSource() == btnReturn) {
@@ -90,7 +88,7 @@ public class ClientsMenuController {
 
 		if (title.equals(texts.getString("clientform.title"))) {
 			ClientsController clientsAdd = loader.getController();
-			clientsAdd.setConexionBD(conexionBD);
+			clientsAdd.setDBConnection(con);
 			clientsAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {

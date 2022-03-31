@@ -44,7 +44,7 @@ public class SupplierDAO implements Persistable<Supplier>, Serializable {
         }
     }
 
-    public HashMap<Integer, Supplier> getMap() {
+    public HashMap<Integer, Supplier> getPackMap() {
         return new HashMap<>(hashMap);
     }
 
