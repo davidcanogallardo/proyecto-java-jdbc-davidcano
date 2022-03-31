@@ -70,9 +70,7 @@ public class IniciBotonsController extends Application {
 
 	@FXML
 	private void onAction(ActionEvent e) throws Exception {
-		if (e.getSource() == btnPersones) {
-			changeScene("/vista/List.fxml", "ewe");
-		} else if (e.getSource() == btnProducts) {
+		if (e.getSource() == btnProducts) {
 			changeScene("/vista/ProductsMenuView.fxml", texts.getString("prodmenu.title"));
 		} else if (e.getSource() == btnClients) {
 			changeScene("/vista/ClientsMenuView.fxml", texts.getString("clientmenu.title"));
