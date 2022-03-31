@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -33,7 +34,19 @@ public class PresenceRegisterDAO {
                 return null;
             }
         }
-        this.map.add(obj);
+        
+		try {
+            String sql = "INSERT INTO presence VALUES (?,?)";
+            PreparedStatement stmt = conexionBD.prepareStatement(sql);
+            int i = 1;
+            stmt.setInt(i++, obj.getId());
+            stmt.setTimestamp(i++, Timestamp.valueOf(LocalDateTime.now()));
+            int rows = stmt.executeUpdate();
+            this.map.add(obj); 
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
         return obj;
     }
 
@@ -41,6 +54,16 @@ public class PresenceRegisterDAO {
         for (Presence presence : this.map) {
             if (presence.getId() == id && presence.getLeaveTime() == null) {
                 presence.setLeaveTime(LocalDateTime.now());
+                try {
+                    String sql = "UPDATE presence SET date_leave=? WHERE id=? AND date_leave IS NULL";
+                    PreparedStatement stmt = conexionBD.prepareStatement(sql);
+                    int i = 1;
+                    stmt.setTimestamp(i++, Timestamp.valueOf(LocalDateTime.now()));
+                    stmt.setInt(i++, id);
+                    int rows = stmt.executeUpdate();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
                 return true;
             }
         }
