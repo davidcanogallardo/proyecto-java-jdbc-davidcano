@@ -50,7 +50,7 @@ public class ProductDAO implements Persistable<Product>, Serializable {
                 stmt.setDouble(i++, pack.getDiscount());
                 
                 stmt.executeUpdate();
-                prodMap.put(obj.getId(), obj);
+                packMap.put(obj.getId(), pack);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 return null;
@@ -159,7 +159,7 @@ public class ProductDAO implements Persistable<Product>, Serializable {
                 PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
                     // ID
-                    stmt.setInt(i++, obj.getId());
+                    stmt.setString(i++, pack.getName());
                     stmt.setDouble(i++, obj.getPrice());
                     stmt.setInt(i++, obj.getStock());
                     stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));
@@ -201,7 +201,7 @@ public class ProductDAO implements Persistable<Product>, Serializable {
                 String sql = "UPDATE product SET name=?,price=?,stock=?,date_start=?,date_end=? WHERE id = ?";
                 PreparedStatement stmt = con.prepareStatement(sql);
                 int i = 1;
-                stmt.setInt(i++, obj.getId());
+                stmt.setString(i++, obj.getName());
                 stmt.setDouble(i++, obj.getPrice());
                 stmt.setInt(i++, obj.getStock());
                 stmt.setDate(i++, Date.valueOf(obj.getStartCatalog()));

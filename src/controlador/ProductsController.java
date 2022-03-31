@@ -140,10 +140,22 @@ public class ProductsController {
                     AlertWindow.show(ventana, texts.getString("alert.prod.createtitle"),
                             texts.getString("alert.prod.createprod"), "");
                     dao.add(prod);
+                    try {
+                        dao.load();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 } else {
                     AlertWindow.show(ventana, texts.getString("alert.prod.createtitle"),
                             texts.getString("alert.prod.prodmodify"), "");
                     dao.modify(prod);
+                    try {
+                        dao.load();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
 
             }

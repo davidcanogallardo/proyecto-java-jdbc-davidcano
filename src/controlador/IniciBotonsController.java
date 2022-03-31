@@ -42,7 +42,8 @@ public class IniciBotonsController extends Application {
 		texts = GenericFormatter.getResourceBundle();
 		try{
 			//Establir la connexio amb la BD
-			String urlBaseDades = "jdbc:postgresql://0.0.0.0:5432/tienda";
+			String urlBaseDades = "jdbc:postgresql://192.168.0.17:5432/tienda";
+			// String urlBaseDades = "jdbc:postgresql://0.0.0.0:5432/tienda";
 			String usuari = "postgres";
 			String contrasenya = "postgres";
 			con = DriverManager.getConnection(urlBaseDades , usuari, contrasenya);
