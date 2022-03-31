@@ -53,9 +53,9 @@ public class PersonesController{
 	//Validació dades
 	private ValidationSupport vs;
 
-	public void setConexionBD(Connection conexionBD) {	
+	public void setDBConnection(Connection con) {	
 		//Crear objecte DAO de persones
-		personesDAO = new PersonesDAO(conexionBD);
+		personesDAO = new PersonesDAO(con);
 		
 		// Aprofitar per carregar la taula de persones (no ho podem fer al initialize() perque encara no tenim l'objecte conexionBD)
 		// https://code.makery.ch/es/library/javafx-tutorial/part2/

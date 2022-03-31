@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Product;
+import model.Pack;
 import model.ProductDAO;
 import utils.GenericFormatter;
 
@@ -30,11 +31,11 @@ public class ProductsMenuController {
 	@FXML
 	private Button btnReturn;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new ProductDAO(conexionBD);
+	public void setDBConnection(Connection bd) throws IOException {
+		this.con = bd;
+		dao = new ProductDAO(con);
 		dao.load();
 	}
 
@@ -62,9 +63,15 @@ public class ProductsMenuController {
 		if (e.getSource() == btnAdd) {
 			changeScene("/vista/ProductsView.fxml", texts.getString("prodform.title"));
 		} else if (e.getSource() == btnList) {
-			for (Product product : dao.getMap().values()) {
+			System.out.println("***************************PRODUCTOS***************************");
+			for (Product product : dao.getProdMap().values()) {
 				System.out.println(product.toString() + "\t");
 			}
+			System.out.println("***************************PACKS***************************");
+			for (Product product : dao.getPackMap().values()) {
+				System.out.println(product.toString());
+			}
+			
 		} else if (e.getSource() == btnListD) {
 			changeScene("/vista/DiscontinuedProdView.fxml", "list");
 		} else if (e.getSource() == btnReturn) {
@@ -86,7 +93,7 @@ public class ProductsMenuController {
 
 		if (title.equals(texts.getString("prodform.title"))) {
 			ProductsController productsAdd = loader.getController();
-			productsAdd.setConexionBD(conexionBD);
+			productsAdd.setDBConnection(con);
 			productsAdd.setVentana(stage);
 
 			stage.setOnCloseRequest((WindowEvent we) -> {
@@ -98,7 +105,7 @@ public class ProductsMenuController {
 			});
 		} else if (title.equals("list")) {
 			DiscontinuedProdController prod = loader.getController();
-			prod.setConexionBD(conexionBD);
+			prod.setDBConnection(con);
 
 			prod.setVentana(stage);
 			stage.setOnCloseRequest((WindowEvent we) -> {

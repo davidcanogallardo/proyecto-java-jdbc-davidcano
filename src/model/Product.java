@@ -11,7 +11,7 @@ public class Product implements Identificable, Serializable, Comparable<Product>
     private Integer id;
     private String name;
     private double price;
-    private Integer stock;
+    protected Integer stock;
     private LocalDate startCatalog;
     private LocalDate endCatalog;
 

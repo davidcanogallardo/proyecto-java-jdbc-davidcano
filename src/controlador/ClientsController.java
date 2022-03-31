@@ -56,11 +56,11 @@ public class ClientsController {
 
     private ValidationSupport vs;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection conexionBD) throws IOException {
-		this.conexionBD = conexionBD;
-		dao = new ClientDAO(conexionBD);
+	public void setDBConnection(Connection con) throws IOException {
+		this.con = con;
+		dao = new ClientDAO(con);
 		dao.load();
 	}
 
@@ -190,7 +190,7 @@ public class ClientsController {
 
     @FXML
     private void list() {
-        System.out.println(dao.getMap());
+        System.out.println(dao.getPackMap());
     }
 
     public boolean isDniLetterValid(String letter, int num) {

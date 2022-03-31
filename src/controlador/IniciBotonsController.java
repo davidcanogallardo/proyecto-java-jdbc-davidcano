@@ -34,7 +34,7 @@ public class IniciBotonsController extends Application {
 	@FXML
 	private Button btnSortir;
 
-	private Connection conexionBD;
+	private Connection con;
 
 	@FXML
 	private void initialize() throws IOException {
@@ -45,7 +45,7 @@ public class IniciBotonsController extends Application {
 			String urlBaseDades = "jdbc:postgresql://0.0.0.0:5432/tienda";
 			String usuari = "postgres";
 			String contrasenya = "postgres";
-			conexionBD = DriverManager.getConnection(urlBaseDades , usuari, contrasenya);
+			con = DriverManager.getConnection(urlBaseDades , usuari, contrasenya);
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -97,17 +97,17 @@ public class IniciBotonsController extends Application {
 		if (title.equals(texts.getString("prodmenu.title"))) {
 			ProductsMenuController productsMenu = loader.getController();
 			System.out.println("voy a prods");
-			productsMenu.setConexionBD(conexionBD);
+			productsMenu.setDBConnection(con);
 			productsMenu.setVentana(stage);
 		} else if (title.equals(texts.getString("clientmenu.title"))) {
 			ClientsMenuController clientMenu = loader.getController();
 			System.out.println("voy a cliente");
-			clientMenu.setConexionBD(conexionBD);
+			clientMenu.setDBConnection(con);
 			clientMenu.setVentana(stage);
 		} else if (title.equals(texts.getString("clockinout.title"))) {
 			PresenceMenuController presenceMenu = loader.getController();
 			System.out.println("voy a cliente");
-			presenceMenu.setConexionBD(conexionBD);
+			presenceMenu.setDBConnection(con);
 			presenceMenu.setVentana(stage);
 		}
 	}
@@ -117,7 +117,7 @@ public class IniciBotonsController extends Application {
 		super.stop();
 		
 		try {
-			if (conexionBD != null) conexionBD.close();
+			if (con != null) con.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}

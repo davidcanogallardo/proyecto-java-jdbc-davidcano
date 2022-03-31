@@ -38,11 +38,11 @@ public class PresenceController {
     private ValidationSupport vs;
     private ResourceBundle texts;
 
-	private Connection conexionBD;
+	private Connection con;
 
-	public void setConexionBD(Connection bd) throws IOException {
-		this.conexionBD = bd;
-		dao = new PresenceRegisterDAO(conexionBD);
+	public void setDBConnection(Connection bd) throws IOException {
+		this.con = bd;
+		dao = new PresenceRegisterDAO(con);
 		dao.load();
 	}
     @FXML

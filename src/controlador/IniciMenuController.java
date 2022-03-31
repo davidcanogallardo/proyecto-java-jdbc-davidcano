@@ -18,20 +18,30 @@ import javafx.stage.Stage;
 
 public class IniciMenuController extends Application {
 	
-	private Connection conexionBD;
+	private Connection con;
 
 	@FXML
     private BorderPane borderPane;
 
 	
-	
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
 	public IniciMenuController() {
 		try{
 			//Establir la connexio amb la BD
 			String urlBaseDades = "jdbc:postgresql://192.168.0.17:5432/tienda";
 			String usuari = "postgres";
 			String contrasenya = "postgres";
-			conexionBD = DriverManager.getConnection(urlBaseDades , usuari, contrasenya);
+			con = DriverManager.getConnection(urlBaseDades , usuari, contrasenya);
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -59,7 +69,7 @@ public class IniciMenuController extends Application {
 		Pane panell = (AnchorPane)loader.load();
 		//Crear un objecte de la clase PersonasController ja que necessitarem accedir al mÃ¨todes d'aquesta classe
 		PersonesController personesControler = (PersonesController)loader.getController();
-		personesControler.setConexionBD(conexionBD);
+		personesControler.setDBConnection(con);
 		
 		borderPane.setCenter(panell); 
 	}
@@ -76,7 +86,7 @@ public class IniciMenuController extends Application {
 		super.stop();
 		
 		try {
-			if (conexionBD != null) conexionBD.close();
+			if (con != null) con.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
